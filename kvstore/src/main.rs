@@ -11,14 +11,14 @@ fn main() {
 
     let contents = format!("{}\t{}\n", key, value);
 
-    let database = Database::new();
-
     let write_result = fs::write("kv.db", contents);
 
     match write_result {
         Ok(()) => println!("Successfully written to db!"),
         Err(e) => println!("Writing to db failed {}", e),
     }
+
+    let database = Database::new().expect("Database::new() crashed!");
 }
 
 struct Database {
@@ -26,9 +26,26 @@ struct Database {
 }
 
 impl Database {
-    fn new() -> Database {
-        Database {
-            map: HashMap::new(),
+    fn new() -> Result<Database, std::io::Error> {
+        // let contents = match fs::read_to_string("kv.db") {
+        //     Ok(c) => c,
+        //     Err(error) => {
+        //         return Err(error);
+        //     }
+        // };
+
+        let mut map = HashMap::new();
+        let contents = fs::read_to_string("kv.db")?;
+
+        for line in contents.lines() {
+            let mut chunks = line.splitn(2, '\t');
+
+            let key = chunks.next().expect("No key!");
+            let value = chunks.next().expect("No value!");
+
+            map.insert(key.to_string(), value.to_owned());
         }
+
+        Ok(Database { map })
     }
 }
