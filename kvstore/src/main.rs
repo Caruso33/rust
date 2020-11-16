@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 
 fn main() {
@@ -10,10 +11,24 @@ fn main() {
 
     let contents = format!("{}\t{}\n", key, value);
 
+    let database = Database::new();
+
     let write_result = fs::write("kv.db", contents);
 
     match write_result {
         Ok(()) => println!("Successfully written to db!"),
         Err(e) => println!("Writing to db failed {}", e),
+    }
+}
+
+struct Database {
+    map: HashMap<String, String>,
+}
+
+impl Database {
+    fn new() -> Database {
+        Database {
+            map: HashMap::new(),
+        }
     }
 }
