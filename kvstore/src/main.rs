@@ -9,20 +9,26 @@ fn main() {
 
     println!("The key is '{}' and the value is '{}'", key, value);
 
-    let contents = format!("{}\t{}\n", key, value);
+    // match write_result {
+    //     Ok(()) => println!("Successfully written to db!"),
+    //     Err(e) => println!("Writing to db failed {}", e),
+    // }
 
-    let write_result = fs::write("kv.db", contents);
+    let mut database = Database::new().expect("Database::new() crashed!");
+    database.insert(key.clone(), value.clone());
+    // or Database::insert(database, key,)
+    database.insert(key.to_uppercase(), value.clone());
 
-    match write_result {
-        Ok(()) => println!("Successfully written to db!"),
-        Err(e) => println!("Writing to db failed {}", e),
+    // database.flush().unwrap()
+    match database.flush() {
+        Ok(()) => println!("Yay"),
+        Err(err) => println!("Oh nos, {}", err),
     }
-
-    let database = Database::new().expect("Database::new() crashed!");
 }
 
 struct Database {
     map: HashMap<String, String>,
+    is_flushed: bool,
 }
 
 impl Database {
@@ -46,6 +52,47 @@ impl Database {
             map.insert(key.to_string(), value.to_owned());
         }
 
-        Ok(Database { map })
+        Ok(Database {
+            map,
+            is_flushed: false,
+        })
     }
+
+    fn insert(&mut self, key: String, value: String) {
+        self.map.insert(key, value);
+    }
+
+    // fn flush(self) -> Result<(), std::io::Error> {
+    fn flush(&mut self) -> std::io::Result<()> {
+        self.is_flushed = true;
+        do_flush(&self)
+    }
+}
+
+// save database on programm end automagically
+impl Drop for Database {
+    fn drop(&mut self) {
+        if !self.is_flushed {
+            let _ = do_flush(self);
+        }
+    }
+}
+
+fn do_flush(database: &Database) -> std::io::Result<()> {
+    let mut contents = String::new();
+    // for pairs in self.map {
+    // let kvpair = format!("{}\t{}\n", pairs.0, pairs.1);
+
+    for (key, value) in &database.map {
+        contents.push_str(key);
+        contents.push('\t');
+        contents.push_str(value);
+        contents.push('\n');
+
+        // let kvpair = format!("{}\t{}\n", key, value);
+        // contents.push_str(&kvpair);
+    }
+    std::fs::write("kv.db", contents)
+
+    // todo!("Finish this method") // compiler, pretend rest of the function is okay
 }
