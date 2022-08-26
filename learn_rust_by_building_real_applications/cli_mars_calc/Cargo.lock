@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "cli_cli_mars_calc"
+name = "cli_mars_calc"
 version = "0.1.0"
