@@ -37,7 +37,9 @@ impl Server {
                             // let res: &Result<Request, _> = &buffer[..].try_into();
                             match Request::try_from(&buffer[..]) {
                                 // or as &[u8]
-                                Ok(_request) => {}
+                                Ok(request) => {
+                                    dbg!(request);
+                                }
                                 Err(e) => println!("Failed to parse a request: {}", e),
                             }
                         }
