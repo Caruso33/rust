@@ -61,11 +61,15 @@ impl TryFrom<&[u8]> for Request {
         // }
 
         if let Some(i) = path.find('?') {
-            query_string = Some(&path[i + 1..]);
+            query_string = Some(path[i + 1..].to_string());
             path = &path[..i]
         }
 
-        unimplemented!()
+        Ok(Self {
+            path: path.to_string(),
+            query_string,
+            method,
+        })
 
         // transform Option into Result
     }
@@ -81,7 +85,7 @@ fn get_next_word(request: &str) -> Option<(&str, &str)> {
     //     }
     // }
 
-    for (index, char) in request.chars().enumerate() {
+    for (i, char) in request.chars().enumerate() {
         if char == ' ' || char == '\r' {
             return Some((&request[..i], &request[i + 1..])); // ' ' | '\r' is always 1 byte long, so i + 1 won't crash
         }
