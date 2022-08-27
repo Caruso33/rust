@@ -1,21 +1,22 @@
 use super::method::{Method, MethodError};
+use super::QueryString;
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::str;
 use std::str::Utf8Error;
 
-pub struct Request {
-    path: String,
-    query_string: Option<String>,
+pub struct Request<'buf> {
+    path: &'buf str,
+    query_string: Option<QueryString<'buf>>,
     method: Method,
 }
 
-impl TryFrom<&[u8]> for Request {
+impl<'buf> TryFrom<&'buf [u8]> for Request<'buf> {
     type Error = ParseError;
 
     // GET /search?name=abc&sort=1 HTTP/1.1
-    fn try_from(buf: &[u8]) -> Result<Self, Self::Error> {
+    fn try_from(buf: &'buf [u8]) -> Result<Request<'buf>, Self::Error> {
         // match str::from_utf8(buf) {
         //     Ok(request) => {}
         //     Err(_) => return Err(ParseError::InvalidEncoding),
@@ -61,12 +62,12 @@ impl TryFrom<&[u8]> for Request {
         // }
 
         if let Some(i) = path.find('?') {
-            query_string = Some(path[i + 1..].to_string());
+            query_string = Some(QueryString::from(&path[i + 1..]));
             path = &path[..i]
         }
 
         Ok(Self {
-            path: path.to_string(),
+            path,
             query_string,
             method,
         })
