@@ -1,7 +1,7 @@
 #[derive(Debug)]
 pub struct Bill {
-    name: String,
-    amount: f32,
+    pub name: String,
+    pub amount: f32,
 }
 
 impl Bill {

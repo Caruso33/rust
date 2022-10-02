@@ -29,11 +29,15 @@
 // * A vector is the easiest way to store the bills at stage 1, but a
 //   hashmap will be easier to work with at stages 2 and 3.
 
-use library::{add, read_user_input, Bill, Command};
+use library::{add, input, remove, view, Bill, Command};
 use std::{io, process};
 
 fn main() {
     let mut bills: Vec<Bill> = Vec::new();
+    bills.push(Bill {
+        name: "H".to_string(),
+        amount: 123.32,
+    });
 
     let mut command: io::Result<String>;
     loop {
@@ -48,11 +52,11 @@ You have following Options:\n
     exit -> Terminate Ultimate Bill Storage System\n
 Have fun!\n"
         );
-        command = read_user_input(Some("Enter command:"));
+        command = input::read_user_input(Some("Enter command:"));
 
         let action: Option<Command> = match command {
             Err(_) => continue,
-            Ok(c) => evaluate_user_input(c.as_str()),
+            Ok(c) => input::evaluate_user_input(c.as_str()),
         };
 
         match action {
@@ -62,33 +66,14 @@ Have fun!\n"
     }
 }
 
-fn evaluate_user_input(input: &str) -> Option<Command> {
-    match input.trim().to_lowercase().as_str() {
-        "view" => Some(Command::View),
-        "add" => Some(Command::Add),
-        "remove" => Some(Command::Remove),
-        "edit" => Some(Command::Edit),
-        "exit" => Some(Command::Exit),
-        _ => None,
-    }
-}
-
 fn perform_action(command: Command, bills: &mut Vec<Bill>) {
     match command {
         Command::View => view(bills),
         Command::Add => add(bills),
-        Command::Remove => println!("Not implemented yet"),
+        Command::Remove => remove(bills),
         Command::Edit => println!("Not implemented yet"),
         Command::Exit => process::exit(0),
     }
-}
-
-fn view(bills: &mut Vec<Bill>) {
-    println!("\nCurrent Bills:\n");
-    for bill in bills {
-        println!("{:?}", bill);
-    }
-    _ = read_user_input(None);
 }
 
 #[cfg(test)]
