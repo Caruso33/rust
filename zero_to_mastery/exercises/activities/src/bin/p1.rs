@@ -29,13 +29,14 @@
 // * A vector is the easiest way to store the bills at stage 1, but a
 //   hashmap will be easier to work with at stages 2 and 3.
 
-use std::io;
+use std::{io, process};
 
 enum Command {
     View,
     Add,
     Remove,
     Edit,
+    Exit,
 }
 
 #[derive(Debug)]
@@ -63,9 +64,10 @@ You have following Options:\n
     add -> Add a new Bill to the system\n
     edit -> Edit an existing Bill in the system\n
     remove -> Delete a Bill from the system\n
+    exit -> Terminate Ultimate Bill Storage System\n
 Have fun!\n"
         );
-        command = read_user_input(None, None);
+        command = read_user_input(Some("Enter command:"));
 
         let action: Option<Command> = match command {
             Err(_) => continue,
@@ -79,17 +81,11 @@ Have fun!\n"
     }
 }
 
-fn read_user_input(
-    user_comment: Option<&str>,
-    pre_used_buffer: Option<String>,
-) -> io::Result<String> {
-    let mut buffer = match pre_used_buffer {
-        None => String::new(),
-        Some(x) => x,
-    };
+fn read_user_input(user_comment: Option<&str>) -> io::Result<String> {
+    let mut buffer = String::new();
 
     match user_comment {
-        None => println!("Enter command:"),
+        None => println!(),
         Some(text) => println!("{}", text),
     }
 
@@ -104,6 +100,7 @@ fn evaluate_user_input(input: &str) -> Option<Command> {
         "add" => Some(Command::Add),
         "remove" => Some(Command::Remove),
         "edit" => Some(Command::Edit),
+        "exit" => Some(Command::Exit),
         _ => None,
     }
 }
@@ -114,6 +111,7 @@ fn perform_action(command: Command, bills: &mut Vec<Bill>) {
         Command::Add => add(bills),
         Command::Remove => println!("Not implemented yet"),
         Command::Edit => println!("Not implemented yet"),
+        Command::Exit => process::exit(0),
     }
 }
 
@@ -122,7 +120,7 @@ fn view(bills: &mut Vec<Bill>) {
     for bill in bills {
         println!("{:?}", bill);
     }
-    read_user_input(Some(""), None);
+    _ = read_user_input(None);
 }
 
 fn add(bills: &mut Vec<Bill>) {
@@ -131,14 +129,7 @@ fn add(bills: &mut Vec<Bill>) {
     let mut confirmation: io::Result<String>;
 
     loop {
-        let pre_used_name = None;
-        // let pre_used_name = if name.is_ok() && name.unwrap().len() > 0 {
-        //     Some(name.unwrap());
-        // } else {
-        //     None;
-        // };
-
-        name = read_user_input(Some("Enter Bill Name"), pre_used_name);
+        name = read_user_input(Some("Enter Bill Name"));
 
         match name {
             Err(_) => continue,
@@ -147,13 +138,7 @@ fn add(bills: &mut Vec<Bill>) {
     }
 
     loop {
-        let pre_used_amount = None;
-        // let pre_used_amount = if amount.is_ok() && amount.unwrap().len() > 0 {
-        //     Some(amount.unwrap());
-        // } else {
-        //     None;
-        // };
-        amount = read_user_input(Some("Enter Bill Amount"), pre_used_amount);
+        amount = read_user_input(Some("Enter Bill Amount"));
 
         if amount.is_err() {
             continue;
@@ -172,17 +157,14 @@ fn add(bills: &mut Vec<Bill>) {
     }
 
     loop {
-        confirmation = read_user_input(
-            Some(
-                format!(
-                    "Name: {}, Amount: {}, is this correct? ([y]es/[n]o/[a]bort)",
-                    name.as_ref().unwrap(),
-                    amount.as_ref().unwrap()
-                )
-                .as_str(),
-            ),
-            None,
-        );
+        confirmation = read_user_input(Some(
+            format!(
+                "Name: {}, Amount: {}, is this correct? ([y]es/[n]o/[a]bort)",
+                name.as_ref().unwrap(),
+                amount.as_ref().unwrap()
+            )
+            .as_str(),
+        ));
 
         match confirmation {
             Err(_) => continue,
@@ -190,7 +172,7 @@ fn add(bills: &mut Vec<Bill>) {
                 if c.to_lowercase() == "y" {
                     let bill = Bill::new(name.unwrap(), amount.unwrap().parse::<f32>().unwrap());
                     bills.push(bill);
-                    read_user_input(Some("Bill added..."), None);
+                    _ = read_user_input(Some("Bill added..."));
                     return;
                 } else if c.to_lowercase() == "n" {
                     add(bills);
