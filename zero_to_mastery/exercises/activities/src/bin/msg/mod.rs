@@ -1,3 +1,3 @@
-mod msg;
+mod utils;
 
-pub use msg::{capitalize, exciting, trim};
+pub use utils::{capitalize, exciting, trim};
