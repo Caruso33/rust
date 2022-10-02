@@ -29,7 +29,7 @@
 // * A vector is the easiest way to store the bills at stage 1, but a
 //   hashmap will be easier to work with at stages 2 and 3.
 
-use library::{add, input, remove, view, Bill, Command};
+use library::{add, edit, input, remove, view, Bill, Command};
 use std::{io, process};
 
 fn main() {
@@ -71,7 +71,7 @@ fn perform_action(command: Command, bills: &mut Vec<Bill>) {
         Command::View => view(bills),
         Command::Add => add(bills),
         Command::Remove => remove(bills),
-        Command::Edit => println!("Not implemented yet"),
+        Command::Edit => edit(bills),
         Command::Exit => process::exit(0),
     }
 }

@@ -6,7 +6,7 @@ pub fn remove(bills: &mut Vec<Bill>) {
     let search_name: String;
 
     loop {
-        name = input::read_user_input(Some("Enter Bill Name"));
+        name = input::read_user_input(Some("Enter Bill Name to Search"));
 
         match name {
             Err(_) => continue,
@@ -17,7 +17,7 @@ pub fn remove(bills: &mut Vec<Bill>) {
         }
     }
 
-    let index = bills.iter().position(|b| &b.name == &search_name);
+    let index = bills.iter().position(|b| b.name == search_name);
 
     match index {
         Some(i) => {
