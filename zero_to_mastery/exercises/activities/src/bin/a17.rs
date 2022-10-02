@@ -12,4 +12,9 @@
 //   to uppercase and lowercase
 //   * Try searching for: to_uppercase, to_lowercase
 
-fn main() {}
+fn main() {
+    let s = String::from("This is a wonderful string");
+
+    println!("Uppercase: {:?}", s.to_uppercase());
+    println!("Lowercase: {:?}", s.to_lowercase());
+}

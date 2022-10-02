@@ -13,20 +13,25 @@ fn part_1() -> bool {
     // has an access level. The "admin" user does have
     // an access level.
     // Note: Use is_some or is_none.
-    maybe_access("admin")
+    let potential_access = maybe_access("admin");
+    if potential_access.is_some() {
+        true
+    } else {
+        false
+    }
 }
 
 fn part_2() -> Option<Access> {
     // "Root" is equivalent to Access::Admin, but it is
     // not listed in the maybe_access function.
     // Note: Use or_else and root().
-    maybe_access("root")
+    maybe_access("root").or_else(|| root())
 }
 
 fn part_3() -> Access {
     // "Alice" is not a listed user, so she will be a guest.
     // Note: Use unwrap_or_else.
-    maybe_access("Alice")
+    maybe_access("Alice").unwrap_or_else(|| Access::Guest)
 }
 
 #[derive(Debug, Eq, PartialEq)]

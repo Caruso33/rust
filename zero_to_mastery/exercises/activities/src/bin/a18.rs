@@ -11,4 +11,31 @@
 // * Return a result from the function
 // * The Err variant should detail the reason why they cannot make a purchase
 
-fn main() {}
+struct Customer {
+    age: i32,
+}
+
+impl Customer {
+    fn can_purchase_restricted(&self) -> Result<(), &str> {
+        if self.age >= 21 {
+            Ok(())
+        } else {
+            Err("Age is under 21")
+        }
+    }
+}
+
+fn main() {
+    let ali = Customer { age: 15 };
+    let bob = Customer { age: 51 };
+
+    check_for_restriction(&ali);
+    check_for_restriction(&bob);
+}
+
+fn check_for_restriction(c: &Customer) {
+    match c.can_purchase_restricted() {
+        Ok(_) => println!("All good, go ahead"),
+        Err(e) => println!("{:?}", e),
+    }
+}

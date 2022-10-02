@@ -11,4 +11,38 @@
 // * Use an if expression to determine which person's info should be printed
 // * The name and colors should be printed using a function
 
-fn main() {}
+struct Person {
+    age: i16,
+    name: String,
+    color: String,
+}
+
+fn main() {
+    let mut people: Vec<Person> = Vec::new();
+
+    let ali = Person {
+        age: 9,
+        name: "Ali".to_string(),
+        color: "green".to_string(),
+    };
+    let bob = Person {
+        age: 51,
+        name: "Bob".to_string(),
+        color: "blue".to_string(),
+    };
+    let charlie = Person {
+        age: 28,
+        name: "Charlie".to_string(),
+        color: "yellow".to_string(),
+    };
+
+    people.push(ali);
+    people.push(bob);
+    people.push(charlie);
+
+    for p in &people {
+        if p.age <= 10 {
+            println!("Name: {:?}, Color: {:?}", p.name, p.color);
+        }
+    }
+}

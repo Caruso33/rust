@@ -32,3 +32,23 @@ fn concat(first: &str, second: &str) -> String {
 }
 
 fn main() {}
+
+#[test]
+fn it_returns_correct_bound_of_clamp() {
+    assert_eq!(clamp(5, 2, 4), 4);
+    assert_eq!(clamp(2, 3, 4), 3);
+    assert_eq!(clamp(3, 2, 4), 3);
+}
+
+#[test]
+fn it_returns_division() {
+    assert_eq!(div(4, 2).unwrap(), 2);
+    assert_eq!(div(5, 2).unwrap(), 2);
+    assert_eq!(div(6, 2).unwrap(), 3);
+}
+
+#[test]
+fn it_correctly_concatenates() {
+    assert_eq!(concat("hello", "world"), "hello world");
+    assert_eq!(concat("goodbye", "me"), "goodbye me");
+}

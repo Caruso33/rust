@@ -22,4 +22,63 @@
 // * Print whether the employee may access the building
 //   * Must use a function that utilizes the question mark operator to do this
 
-fn main() {}
+enum Position {
+    Maintenance,
+    Marketing,
+    Manager,
+    LineSupervisor,
+    Kitchen,
+    Assembly,
+}
+
+enum Status {
+    Employed,
+    NotEmployed,
+}
+
+struct Employee {
+    position: Position,
+    status: Status,
+}
+
+impl Employee {
+    fn try_access(&self) -> Result<(), &str> {
+        match self.position {
+            Position::Maintenance | Position::Marketing | Position::Manager => match self.status {
+                Status::Employed => Ok(()),
+                _ => Err("Invalid status!"),
+            },
+            _ => Err("Invalid position!"),
+        }
+    }
+}
+
+fn main() {
+    let ali = Employee {
+        position: Position::Maintenance,
+        status: Status::NotEmployed,
+    };
+    let bob = Employee {
+        position: Position::Marketing,
+        status: Status::Employed,
+    };
+    let charli = Employee {
+        position: Position::LineSupervisor,
+        status: Status::Employed,
+    };
+    let doris = Employee {
+        position: Position::Kitchen,
+        status: Status::NotEmployed,
+    };
+
+    print_access(&ali);
+    print_access(&bob);
+    print_access(&charli);
+    print_access(&doris);
+}
+
+fn print_access(e: &Employee) -> Result<(), &str> {
+    let attempt_success = e.try_access()?;
+    println!("All good, go ahead");
+    Ok(())
+}

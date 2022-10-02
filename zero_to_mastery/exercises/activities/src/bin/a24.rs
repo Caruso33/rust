@@ -10,4 +10,8 @@
 
 fn main() {
     let data = vec![1, 2, 3, 4, 5];
+
+    let triple_data: Vec<_> = data.iter().map(|d| d * 3).collect();
+
+    println!("{:?}", triple_data);
 }

@@ -25,4 +25,22 @@ fn find_user(name: &str) -> Option<i32> {
     }
 }
 
-fn main() {}
+fn print_user_if_exist(name: &str) {
+    let user = find_user(&name).map(|user_id| User {
+        user_id,
+        name: name.to_string(),
+    });
+
+    match user {
+        Some(u) => println!("{:?}", &u),
+        None => println!("not found"),
+    }
+}
+
+fn main() {
+    let mut name = "katie";
+    print_user_if_exist(&name);
+
+    name = "tom";
+    print_user_if_exist(&name);
+}
