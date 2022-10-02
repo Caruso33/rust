@@ -1,7 +1,8 @@
 use super::{input, Bill};
-use std::io;
+use collections::HashMap;
+use std::{collections, io};
 
-pub fn remove(bills: &mut Vec<Bill>) {
+pub fn remove(bills: &mut HashMap<String, Bill>) {
     let mut name: io::Result<String>;
     let search_name: String;
 
@@ -17,14 +18,11 @@ pub fn remove(bills: &mut Vec<Bill>) {
         }
     }
 
-    let index = bills.iter().position(|b| b.name == search_name);
+    let bill = bills.remove(&search_name);
 
-    match index {
-        Some(i) => {
-            let bill = &bills[i];
-            println!("Removing {:?} from the System", bill);
-
-            bills.remove(i);
+    match bill {
+        Some(b) => {
+            println!("removed {:?} from the System", b);
         }
         None => println!("Bill with name not found, please try again."),
     }

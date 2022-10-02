@@ -1,11 +1,12 @@
 use super::{input, Bill};
+use std::collections::HashMap;
 
-pub fn view(bills: &mut Vec<Bill>) {
+pub fn view(bills: &mut HashMap<String, Bill>) {
     println!("\nCurrent Bills:\n");
 
     let mut total_amount: f32 = 0.0;
 
-    for bill in bills {
+    for (_key, bill) in bills.iter() {
         total_amount += bill.amount;
 
         println!("{:?}", bill);

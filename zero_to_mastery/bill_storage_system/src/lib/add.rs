@@ -2,7 +2,9 @@ use super::input;
 use super::types::Bill;
 use std::io;
 
-pub fn add(bills: &mut Vec<Bill>) {
+use std::collections::HashMap;
+
+pub fn add(bills: &mut HashMap<String, Bill>) {
     let mut name: io::Result<String>;
     let mut amount: io::Result<String>;
     let mut confirmation: io::Result<String>;
@@ -35,12 +37,13 @@ pub fn add(bills: &mut Vec<Bill>) {
         }
     }
 
+    let bill = Bill::new(name.unwrap(), amount.unwrap().parse::<f32>().unwrap());
+
     loop {
         confirmation = input::read_user_input(Some(
             format!(
                 "Name: {}, Amount: {}, is this correct? ([y]es/[n]o/[a]bort)",
-                name.as_ref().unwrap(),
-                amount.as_ref().unwrap()
+                &bill.name, &bill.amount
             )
             .as_str(),
         ));
@@ -49,8 +52,8 @@ pub fn add(bills: &mut Vec<Bill>) {
             Err(_) => continue,
             Ok(c) => {
                 if c.to_lowercase() == "y" {
-                    let bill = Bill::new(name.unwrap(), amount.unwrap().parse::<f32>().unwrap());
-                    bills.push(bill);
+                    bills.insert(bill.name.clone(), bill);
+
                     _ = input::read_user_input(Some("Bill added..."));
                     return;
                 } else if c.to_lowercase() == "n" {

@@ -1,15 +1,16 @@
 use super::input;
 use super::types::Bill;
-use std::io;
+use collections::HashMap;
+use std::{collections, io};
 
-pub fn edit(bills: &mut Vec<Bill>) {
+pub fn edit(bills: &mut HashMap<String, Bill>) {
     let mut name: io::Result<String>;
     let mut search_name: String;
 
-    let mut bill: &mut Bill;
+    let bill: &mut Bill;
 
     loop {
-        name = input::read_user_input(Some("Enter Bill Name"));
+        name = input::read_user_input(Some("Enter Bill Name to Search"));
 
         match name {
             Err(_) => continue,
@@ -18,12 +19,13 @@ pub fn edit(bills: &mut Vec<Bill>) {
             }
         }
 
-        let index = bills.iter().position(|b| b.name == search_name);
+        let bill_opt: Option<&mut Bill> = bills.get_mut(&search_name.clone());
 
-        match index {
-            Some(i) => {
-                bill = &mut bills[i];
-                println!("Found {:?} in the System", bill);
+        match bill_opt {
+            Some(b) => {
+                println!("Found {:?} in the System", &b);
+
+                bill = b;
 
                 break;
             }

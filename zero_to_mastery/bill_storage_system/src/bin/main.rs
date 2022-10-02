@@ -29,15 +29,19 @@
 // * A vector is the easiest way to store the bills at stage 1, but a
 //   hashmap will be easier to work with at stages 2 and 3.
 
+use collections::HashMap;
 use library::{add, edit, input, remove, view, Bill, Command};
-use std::{io, process};
+use std::{collections, io, process};
 
 fn main() {
-    let mut bills: Vec<Bill> = Vec::new();
-    bills.push(Bill {
-        name: "H".to_string(),
-        amount: 123.32,
-    });
+    let mut bills: HashMap<String, Bill> = HashMap::new();
+    bills.insert(
+        "H".to_string(),
+        Bill {
+            name: "H".to_string(),
+            amount: 123.32,
+        },
+    );
 
     let mut command: io::Result<String>;
     loop {
@@ -66,7 +70,7 @@ Have fun!\n"
     }
 }
 
-fn perform_action(command: Command, bills: &mut Vec<Bill>) {
+fn perform_action(command: Command, bills: &mut HashMap<String, Bill>) {
     match command {
         Command::View => view(bills),
         Command::Add => add(bills),
