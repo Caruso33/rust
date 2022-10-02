@@ -34,12 +34,16 @@ enum State {
 }
 
 fn main() {
-    let mut command: String;
+    let mut command: io::Result<String>;
 
     loop {
         command = read_user_input();
 
-        let state = evaluate_user_input(&command);
+        if let Err(_) = command {
+            continue;
+        }
+
+        let state = evaluate_user_input(&command.unwrap());
 
         if state.is_some() {
             print_answer(state.unwrap());
@@ -47,14 +51,14 @@ fn main() {
     }
 }
 
-fn read_user_input() -> String {
-    let mut input = String::new();
+fn read_user_input() -> io::Result<String> {
+    let mut buffer = String::new();
 
     println!("Enter command:");
 
-    io::stdin().read_line(&mut input).unwrap();
+    io::stdin().read_line(&mut buffer)?;
 
-    input
+    Ok(buffer.trim().to_owned())
 }
 
 fn evaluate_user_input(input: &String) -> Option<State> {
