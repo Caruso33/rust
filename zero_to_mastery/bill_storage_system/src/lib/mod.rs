@@ -8,5 +8,5 @@ pub mod view;
 pub use add::add;
 pub use edit::edit;
 pub use remove::remove;
-pub use types::{Bill, Command};
+pub use types::{Bill, Command, MainSystem};
 pub use view::view;
