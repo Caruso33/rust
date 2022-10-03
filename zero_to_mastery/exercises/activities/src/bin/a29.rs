@@ -35,4 +35,14 @@ impl Priority for Guest {
     }
 }
 
-fn main() {}
+fn print_guest_details<T: Priority + std::fmt::Debug>(guest: &T) {
+    println!("{:?} {:?}", guest, guest.get_priority());
+}
+
+fn main() {
+    let important_guest = ImportantGuest {};
+    let guest = Guest {};
+
+    print_guest_details(&important_guest);
+    print_guest_details(&guest);
+}

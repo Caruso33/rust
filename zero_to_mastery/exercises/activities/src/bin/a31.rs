@@ -19,4 +19,52 @@
 // * Use a function to calculate the total cost
 // * Process at least 3 different materials
 
-fn main() {}
+trait MaterialCost {
+    fn cost_of_material(&self, sqm: &f64) -> f64;
+}
+
+struct Carpet {
+    cost_per_sqm: f64,
+}
+
+impl MaterialCost for Carpet {
+    fn cost_of_material(&self, sqm: &f64) -> f64 {
+        sqm * self.cost_per_sqm
+    }
+}
+
+struct Tile {
+    cost_per_sqm: f64,
+}
+
+impl MaterialCost for Tile {
+    fn cost_of_material(&self, sqm: &f64) -> f64 {
+        sqm * self.cost_per_sqm
+    }
+}
+
+struct Wood {
+    cost_per_sqm: f64,
+}
+
+impl MaterialCost for Wood {
+    fn cost_of_material(&self, sqm: &f64) -> f64 {
+        sqm * self.cost_per_sqm
+    }
+}
+
+fn print_cost_of_material(material: impl MaterialCost, sqm: &f64) {
+    println!("{:?}", material.cost_of_material(sqm));
+}
+
+fn main() {
+    let sqm: f64 = 10.;
+
+    let carpet = Carpet { cost_per_sqm: 10.0 };
+    let tile = Tile { cost_per_sqm: 15.0 };
+    let wood = Wood { cost_per_sqm: 20.0 };
+
+    print_cost_of_material(carpet, &sqm);
+    print_cost_of_material(tile, &sqm);
+    print_cost_of_material(wood, &sqm);
+}

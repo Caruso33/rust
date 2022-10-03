@@ -29,6 +29,9 @@
 // * A vector is the easiest way to store the bills at stage 1, but a
 //   hashmap will be easier to work with at stages 2 and 3.
 
+mod p1_add;
+
+use p1_add::add;
 use std::{io, process};
 
 enum Command {
@@ -40,7 +43,7 @@ enum Command {
 }
 
 #[derive(Debug)]
-struct Bill {
+pub struct Bill {
     name: String,
     amount: f32,
 }
@@ -81,19 +84,6 @@ Have fun!\n"
     }
 }
 
-fn read_user_input(user_comment: Option<&str>) -> io::Result<String> {
-    let mut buffer = String::new();
-
-    match user_comment {
-        None => println!(),
-        Some(text) => println!("{}", text),
-    }
-
-    io::stdin().read_line(&mut buffer)?;
-
-    Ok(buffer.trim().to_owned())
-}
-
 fn evaluate_user_input(input: &str) -> Option<Command> {
     match input.trim().to_lowercase().as_str() {
         "view" => Some(Command::View),
@@ -121,68 +111,4 @@ fn view(bills: &mut Vec<Bill>) {
         println!("{:?}", bill);
     }
     _ = read_user_input(None);
-}
-
-fn add(bills: &mut Vec<Bill>) {
-    let mut name: io::Result<String>;
-    let mut amount: io::Result<String>;
-    let mut confirmation: io::Result<String>;
-
-    loop {
-        name = read_user_input(Some("Enter Bill Name"));
-
-        match name {
-            Err(_) => continue,
-            Ok(_) => break,
-        }
-    }
-
-    loop {
-        amount = read_user_input(Some("Enter Bill Amount"));
-
-        if amount.is_err() {
-            continue;
-        }
-
-        match &amount {
-            Err(_) => continue,
-            Ok(a) => {
-                let float = a.parse::<f32>();
-                match float {
-                    Ok(_) => break,
-                    Err(_) => continue,
-                }
-            }
-        }
-    }
-
-    loop {
-        confirmation = read_user_input(Some(
-            format!(
-                "Name: {}, Amount: {}, is this correct? ([y]es/[n]o/[a]bort)",
-                name.as_ref().unwrap(),
-                amount.as_ref().unwrap()
-            )
-            .as_str(),
-        ));
-
-        match confirmation {
-            Err(_) => continue,
-            Ok(c) => {
-                if c.to_lowercase() == "y" {
-                    let bill = Bill::new(name.unwrap(), amount.unwrap().parse::<f32>().unwrap());
-                    bills.push(bill);
-                    _ = read_user_input(Some("Bill added..."));
-                    return;
-                } else if c.to_lowercase() == "n" {
-                    add(bills);
-                    return;
-                } else if c.to_lowercase() == "a" {
-                    return;
-                } else {
-                    continue;
-                }
-            }
-        }
-    }
 }

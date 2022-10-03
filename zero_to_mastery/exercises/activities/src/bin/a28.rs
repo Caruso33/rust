@@ -23,4 +23,34 @@ enum Color {
     Yellow,
 }
 
+struct Shoes {
+    color: Color,
+}
+
+impl Shoes {
+    fn new(&self, color: &Color) -> Self {
+        Shoes { color }
+    }
+}
+
+struct Shirt {
+    color: Color,
+}
+
+impl Shirt {
+    fn new(&self, color: &Color) -> Self {
+        Shirt { color }
+    }
+}
+
+struct Pants {
+    color: Color,
+}
+
+impl Pants {
+    fn new(&self, color: &Color) -> Self {
+        Pants { color }
+    }
+}
+
 fn main() {}
