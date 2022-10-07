@@ -20,51 +20,46 @@
 // * Process at least 3 different materials
 
 trait MaterialCost {
-    fn cost_of_material(&self, sqm: &f64) -> f64;
+    fn cost_per_sqm(&self) -> f64;
+    fn cost_of_material(&self, sqm: &f64) -> f64 {
+        sqm * self.cost_per_sqm()
+    }
 }
 
-struct Carpet {
-    cost_per_sqm: f64,
+fn total_cost(materials: &Vec<Box<dyn MaterialCost>>, sqm: &f64) -> f64 {
+    materials.iter().map(|mat| mat.cost_of_material(sqm)).sum()
 }
 
+struct Carpet(f64);
 impl MaterialCost for Carpet {
-    fn cost_of_material(&self, sqm: &f64) -> f64 {
-        sqm * self.cost_per_sqm
+    fn cost_per_sqm(&self) -> f64 {
+        self.0
     }
 }
 
-struct Tile {
-    cost_per_sqm: f64,
-}
-
+struct Tile(f64);
 impl MaterialCost for Tile {
-    fn cost_of_material(&self, sqm: &f64) -> f64 {
-        sqm * self.cost_per_sqm
+    fn cost_per_sqm(&self) -> f64 {
+        self.0
     }
 }
 
-struct Wood {
-    cost_per_sqm: f64,
-}
-
+struct Wood(f64);
 impl MaterialCost for Wood {
-    fn cost_of_material(&self, sqm: &f64) -> f64 {
-        sqm * self.cost_per_sqm
+    fn cost_per_sqm(&self) -> f64 {
+        self.0
     }
-}
-
-fn print_cost_of_material(material: impl MaterialCost, sqm: &f64) {
-    println!("{:?}", material.cost_of_material(sqm));
 }
 
 fn main() {
     let sqm: f64 = 10.;
 
-    let carpet = Carpet { cost_per_sqm: 10.0 };
-    let tile = Tile { cost_per_sqm: 15.0 };
-    let wood = Wood { cost_per_sqm: 20.0 };
+    let mut materials: Vec<Box<dyn MaterialCost>> = vec![];
 
-    print_cost_of_material(carpet, &sqm);
-    print_cost_of_material(tile, &sqm);
-    print_cost_of_material(wood, &sqm);
+    materials.push(Box::new(Carpet(10.0)));
+    materials.push(Box::new(Tile(15.0)));
+    materials.push(Box::new(Wood(20.0)));
+
+    let costs = total_cost(&materials, &sqm);
+    println!("Total costs for {:?} sqm is {:?}", sqm, costs);
 }

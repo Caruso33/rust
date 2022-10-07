@@ -15,6 +15,7 @@
 //   * EndCustody      (luggage was picked up by passenger)
 // Notes:
 // * Optionally use generics for each state
+
 #[derive(Debug)]
 
 enum LuggageState {
@@ -26,27 +27,15 @@ enum LuggageState {
 }
 
 #[derive(Debug)]
-
 struct LuggageId(usize);
 
 #[derive(Debug)]
-struct CheckIn;
-#[derive(Debug)]
-struct OnLoading;
-#[derive(Debug)]
-struct OffLoading;
-#[derive(Debug)]
-struct AwaitingPickup;
-#[derive(Debug)]
-struct EndCustody;
-
-#[derive(Debug)]
-struct Luggage<State> {
+struct Luggage<LuggageState> {
     tracking_id: LuggageId,
-    state: State,
+    state: LuggageState,
 }
 
-impl<State: std::fmt::Debug> Luggage<State> {
+impl<LuggageState: std::fmt::Debug> Luggage<LuggageState> {
     fn transition<NextState>(self, state: NextState) -> Luggage<NextState> {
         Luggage {
             tracking_id: self.tracking_id,
@@ -58,39 +47,33 @@ impl<State: std::fmt::Debug> Luggage<State> {
     }
 }
 
-impl Luggage<CheckIn> {
-    fn new(tracking_id: u32) -> Self {
+impl Luggage<LuggageState> {
+    fn new(tracking_id: LuggageId) -> Self {
         Self {
             tracking_id,
-            state: CheckIn,
+            state: LuggageState::CheckIn,
         }
     }
 
-    fn on_load(self) -> Luggage<OnLoading> {
-        self.transition(OnLoading)
+    fn on_load(self) -> Luggage<LuggageState> {
+        self.transition(LuggageState::OnLoading)
     }
-}
 
-impl Luggage<OnLoading> {
-    fn off_load(self) -> Luggage<OffLoading> {
-        self.transition(OffLoading)
+    fn off_load(self) -> Luggage<LuggageState> {
+        self.transition(LuggageState::OffLoading)
     }
-}
 
-impl Luggage<OffLoading> {
-    fn await_pickup(self) -> Luggage<AwaitingPickup> {
-        self.transition(AwaitingPickup)
+    fn await_pickup(self) -> Luggage<LuggageState> {
+        self.transition(LuggageState::AwaitingPickup)
     }
-}
 
-impl Luggage<AwaitingPickup> {
-    fn end_custody(self) -> Luggage<EndCustody> {
-        self.transition(EndCustody)
+    fn end_custody(self) -> Luggage<LuggageState> {
+        self.transition(LuggageState::EndCustody)
     }
 }
 
 fn main() {
-    let luggage = Luggage::new(123);
+    let luggage = Luggage::new(LuggageId(123));
     luggage.print_state();
 
     let on_loaded = luggage.on_load();
