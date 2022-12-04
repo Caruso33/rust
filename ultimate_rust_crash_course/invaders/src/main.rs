@@ -1,5 +1,10 @@
+use crossterm::{
+    cursor::{Hide, Show},
+    execute,
+    terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
+};
 use rusty_audio::Audio;
-use std::error::Error;
+use std::{error::Error, io};
 
 const AUDIO_PATH: &str = "audio/contributions/startupDoMiReDo/";
 
@@ -15,7 +20,18 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     audio.play("startup");
 
+    let mut stdout = io::stdout();
+    terminal::enable_raw_mode()?;
+    // stdout.execute(EnterAlternateScreen)?;
+
+    execute!(stdout, EnterAlternateScreen)?;
+    execute!(stdout, Hide)?;
+
+    // cleanup
     audio.wait();
+    execute!(stdout, Show)?;
+    execute!(stdout, LeaveAlternateScreen)?;
+    terminal::disable_raw_mode()?;
 
     Ok(())
 }
