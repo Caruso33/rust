@@ -6,7 +6,7 @@ use crossterm::{
 };
 use invaders::{
     frame::{self, new_frame, Drawable},
-    invaders::{Invader, Invaders},
+    invaders::Invaders,
     player::Player,
     render,
 };

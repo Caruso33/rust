@@ -29,7 +29,7 @@ impl Invaders {
                     && (x % 2 == 0)
                     && (y % 2 == 0)
                 {
-                    army.push(Invader { x, y })
+                    army.push(Invader { x, y });
                 }
             }
         }
@@ -55,9 +55,9 @@ impl Invaders {
                     downwards = true;
                 }
             } else {
-                let max_x = self.army.iter().map(|invader| invader.y).max().unwrap_or(0);
+                let max_x = self.army.iter().map(|invader| invader.x).max().unwrap_or(0);
                 if max_x == NUM_COLS - 1 {
-                    self.direction -= 1;
+                    self.direction = -1;
                     downwards = true;
                 }
             }
@@ -85,14 +85,10 @@ impl Invaders {
 impl Drawable for Invaders {
     fn draw(&self, frame: &mut crate::frame::Frame) {
         for invader in self.army.iter() {
-            frame[invader.x][invader.y] = if (self.move_timer.time_left.as_secs_f32()
-                / self.move_timer.duration.as_secs_f32())
-                > 0.5
-            {
-                "x"
-            } else {
-                "+"
-            };
+            let half_the_time =
+                self.move_timer.time_left.as_secs_f32() / self.move_timer.duration.as_secs_f32();
+
+            frame[invader.x][invader.y] = if half_the_time > 0.5 { "x" } else { "+" };
         }
     }
 }
