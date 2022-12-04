@@ -105,9 +105,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // draw & render
-        // player.draw(&mut current_frame);
-        // invaders.draw(&mut current_frame);
-
         let drawables: Vec<&dyn Drawable> = vec![&player, &invaders];
         for drawable in drawables {
             drawable.draw(&mut current_frame);
