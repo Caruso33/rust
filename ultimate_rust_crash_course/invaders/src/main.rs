@@ -1,10 +1,11 @@
 use crossterm::{
     cursor::{Hide, Show},
+    event::{self, Event, KeyCode},
     execute,
     terminal::{self, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use rusty_audio::Audio;
-use std::{error::Error, io};
+use std::{error::Error, io, time::Duration};
 
 const AUDIO_PATH: &str = "audio/contributions/startupDoMiReDo/";
 
@@ -20,12 +21,29 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     audio.play("startup");
 
+    // setup
     let mut stdout = io::stdout();
     terminal::enable_raw_mode()?;
     // stdout.execute(EnterAlternateScreen)?;
 
     execute!(stdout, EnterAlternateScreen)?;
     execute!(stdout, Hide)?;
+
+    // game loop
+    'gameloop: loop {
+        // input
+        while event::poll(Duration::default())? {
+            if let Event::Key(key_event) = event::read()? {
+                match key_event.code {
+                    KeyCode::Esc | KeyCode::Char('q') => {
+                        audio.play("lose");
+                        break 'gameloop;
+                    }
+                    _ => continue,
+                }
+            }
+        }
+    }
 
     // cleanup
     audio.wait();
